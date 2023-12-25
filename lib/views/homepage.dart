@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/models/hero_model.dart';
+import 'package:mobile/views/hero_list_tile.dart';
 
 const URL = "https://abusing-scripts.vercel.app/api/heros";
 
@@ -30,8 +31,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(182, 196, 182, 1.0),
       appBar: AppBar(
-        title: const Text("Dota 2 Heros"),
+        backgroundColor: const Color.fromRGBO(22, 48, 32, 1.0),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
+        title: const Text(
+          "Dota 2 Heros",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -40,32 +53,8 @@ class _HomePageState extends State<HomePage> {
               itemCount: heros.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        color: Color.fromARGB(85, 0, 0, 0),
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.network(
-                        heros[index].imageUrl ?? "null",
-                        // fit: BoxFit.cover,
-                      ),
-                    ),
-                    title: Text(heros[index].localizedName ?? ""),
-                    subtitle: Text(
-                        'Primary Attribute: ${formattedAttr(heros[index].primaryAttr ?? "")}'),
-                    trailing: Text(heros[index].attackType ?? "null"),
-                    onTap: () {
-                      // Handle tap on the list item
-                      print('Tapped on ${heros[index].localizedName}');
-                    },
-                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  child: HeroListTile(hero: heros[index]),
                 );
               },
             ),
@@ -89,16 +78,5 @@ class _HomePageState extends State<HomePage> {
     }
     isLoading = false;
     setState(() {});
-  }
-
-  String formattedAttr(String rawAttr) {
-    String formattedAttr = rawAttr == 'agi'
-        ? 'Agility'
-        : rawAttr == "str"
-            ? "Strength"
-            : rawAttr == "int"
-                ? "Intelligent"
-                : "All";
-    return formattedAttr;
   }
 }
